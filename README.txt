@@ -1,1 +1,1 @@
-This is a README for The Orange Alliance!
+This is The Orange Alliance!
