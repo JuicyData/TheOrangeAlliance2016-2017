@@ -1,22 +1,14 @@
+# The Orange Alliance  
+### DESCRIPTION  
+	A database for event scoring and reporting with live data analysis. The data is juicy!
 
-The Orange Alliance
-
-
-Description
-
-A database for event scoring and reporting with live data analysis. The data is juicy!
-
-
-Table of Contents
+### USAGE  
+	http://theorangealliance.net
 
 
-Installation
+### CONTRIBUTING  
+	See wiki for now
 
 
-Usage
-
-
-Contributing
-
-
-Credits
+### AUTHORS  
+	The Orange Alliance was first released in January 2017 by Cameron DeMille, Micael Leonffu, and Ryan Nemiroff
