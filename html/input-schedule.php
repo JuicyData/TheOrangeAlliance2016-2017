@@ -297,8 +297,12 @@
 				<div class="col-md-6" style="padding-bottom: 10px;">
 				<center>
 				Designed by:
+				Cameron DeMille, 
+				Michael Leonffu, 
+				Ryan Nemiroff,
 				Team 8097 Botcats,
 				Team 9261 Level Up,
+				and
 				Team 10809 Crow Force 5
 				</center>
 				</div>
