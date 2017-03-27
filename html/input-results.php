@@ -24,11 +24,11 @@
 		<div class="navbar navbar-default navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
-					<a class="nav-brand" href="http://theorangealliance.tk:8080/"> 
+					<a class="nav-brand" href="/"> 
 					<img style="max-width:50px" src="/images/logo.png"> 
 					<span class="logo hidden-xs">The Orange Alliance</span>
 					</a>
-					<a class="nav-brand" href="http://theorangealliance.tk:8080/"></a>
+					<a class="nav-brand" href="/"></a>
 					<button class = "navbar-toggle" data-toggle = "collapse" data-target = ".navHeaderCollapse">
 						<span class = "icon-bar"></span>
 						<span class = "icon-bar"></span>
@@ -37,11 +37,11 @@
 				</div>
 				<div class = "collapse navbar-collapse navHeaderCollapse">
 					<ul class = "nav navbar-nav navbar-right">
-						<li ><a href = "http://theorangealliance.tk:8080/">Home</a></li>
-						<li><a href = "http://theorangealliance.tk:8080/events/velocity-vortex.php">Events</a></li>
-						<li><a href = "http://theorangealliance.tk:8080/input-data.php">Input Data</a></li>
-						<li class = "active"><a href = "http://theorangealliance.tk:8080/input-results.php">Input Results</a></li>
-						<li><a href = "http://theorangealliance.tk:8080/input-schedule.php">Input Schedule</a></li>
+						<li ><a href = "/">Home</a></li>
+						<li><a href = "/events/velocity-vortex.php">Events</a></li>
+						<li><a href = "/input-data.php">Input Data</a></li>
+						<li class = "active"><a href = "/input-results.php">Input Results</a></li>
+						<li><a href = "/input-schedule.php">Input Schedule</a></li>
 					</ul>
 				</div>
 			</div>

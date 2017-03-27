@@ -4,10 +4,10 @@
 		<title>The Orange Alliance</title>
 		<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 		<meta name = "viewport" content="width=device-width, initial-scale=1.0">
-		<link href = "http://theorangealliance.tk:8080/css/bootstrap.min.css" rel = "stylesheet" type="text/css">
-		<link href = "http://theorangealliance.tk:8080/css/styles.css" rel = "stylesheet" type="text/css">
-		<link href = "http://theorangealliance.tk:8080/css/jquery.dataTables.min.css" rel = "stylesheet" type="text/css">
-		<link href = "http://theorangealliance.tk:8080/css/fixedHeader.dataTables.min.css" rel = "stylesheet" type="text/css">
+		<link href = "/css/bootstrap.min.css" rel = "stylesheet" type="text/css">
+		<link href = "/css/styles.css" rel = "stylesheet" type="text/css">
+		<link href = "/css/jquery.dataTables.min.css" rel = "stylesheet" type="text/css">
+		<link href = "/css/fixedHeader.dataTables.min.css" rel = "stylesheet" type="text/css">
 		<link rel="apple-touch-icon" sizes="152x152" href="https://sites.google.com/site/filehostdummysite1234/files/theorangealliance/apple-touch-icon.png?v=vMrqOno5qk">
 		<link rel="icon" type="image/png" href="https://sites.google.com/site/filehostdummysite1234/files/theorangealliance/favicon-32x32.png?v=vMrqOno5qk" sizes="32x32">
 		<link rel="icon" type="image/png" href="https://sites.google.com/site/filehostdummysite1234/files/theorangealliance/favicon-16x16.png?v=vMrqOno5qk" sizes="16x16">
@@ -20,9 +20,9 @@
 		<meta name="theme-color" content="#ff9500">
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 		<script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-		<script src="http://theorangealliance.tk:8080/js/jquery.dataTables.min.js"></script>
-		<script src="http://theorangealliance.tk:8080/js/dataTables.bootstrap.min.js"></script>
-		<script src="http://theorangealliance.tk:8080/js/dataTables.fixedHeader.min.js"></script>
+		<script src="/js/jquery.dataTables.min.js"></script>
+		<script src="/js/dataTables.bootstrap.min.js"></script>
+		<script src="/js/dataTables.fixedHeader.min.js"></script>
 		<script type="text/javascript">
 		$(document).ready(function() { 
 		$("#inputTable1").DataTable({
@@ -41,14 +41,14 @@
 		</script>
 	</head>	
 	<body>
-		<div class="navbar navbar-default navbar-fixed-top">
+		<div style = "margin-bottom: 0px;" class="navbar navbar-default navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
-					<a class="nav-brand" href="http://theorangealliance.tk:8080/"> 
+					<a class="nav-brand" href="/"> 
 					<img style="max-width:50px" src="/images/logo.png"> 
 					<span class="logo hidden-xs">The Orange Alliance</span>
 					</a>
-					<a class="nav-brand" href="http://theorangealliance.tk:8080/"></a>
+					<a class="nav-brand" href="/"></a>
 					<button class = "navbar-toggle" data-toggle = "collapse" data-target = ".navHeaderCollapse">
 						<span class = "icon-bar"></span>
 						<span class = "icon-bar"></span>
@@ -57,9 +57,9 @@
 				</div>
 				<div class = "collapse navbar-collapse navHeaderCollapse">
 					<ul class = "nav navbar-nav navbar-right">
-						<li ><a href = "http://theorangealliance.tk:8080/">Home</a></li>
-						<li class = "active"><a href = "http://theorangealliance.tk:8080/events/velocity-vortex.php">Events</a></li>
-						<li ><a href = "http://theorangealliance.tk:8080/input-data.php">Input Match Results</a></li>
+						<li ><a href = "/">Home</a></li>
+						<li class = "active"><a href = "/events/velocity-vortex.php">Events</a></li>
+						<li ><a href = "/input-data.php">Input Match Results</a></li>
 					</ul>
 				</div>
 			</div>
@@ -194,6 +194,6 @@
 				</div>
 			</div>
 		</div>
-		<script src = "http://theorangealliance.tk:8080/js/bootstrap.js"></script>
+		<script src = "/js/bootstrap.js"></script>
 	</body>
 </html>
