@@ -4,8 +4,8 @@
 		<title>The Orange Alliance</title>
 		<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 		<meta name = "viewport" content="width=device-width, initial-scale=1.0">
-		<link href = "css/bootstrap.min.css" rel = "stylesheet" type="text/css">
-		<link href = "css/styles.css" rel = "stylesheet" type="text/css">
+		<link href = "/css/bootstrap.min.css" rel = "stylesheet" type="text/css">
+		<link href = "/css/styles.css" rel = "stylesheet" type="text/css">
 		<link rel="apple-touch-icon" sizes="152x152" href="https://sites.google.com/site/filehostdummysite1234/files/theorangealliance/apple-touch-icon.png?v=vMrqOno5qk">
 		<link rel="icon" type="image/png" href="https://sites.google.com/site/filehostdummysite1234/files/theorangealliance/favicon-32x32.png?v=vMrqOno5qk" sizes="32x32">
 		<link rel="icon" type="image/png" href="https://sites.google.com/site/filehostdummysite1234/files/theorangealliance/favicon-16x16.png?v=vMrqOno5qk" sizes="16x16">
@@ -74,6 +74,7 @@
 					</ul>
 				</div>
 			</div>
+		</div>
 		</div>
 		
 		<div class="content">
@@ -394,7 +395,7 @@
 			AllOfIt();
 		?>
 		</div>
-				<div class="footer">
+		<div class="footer">
 			<div class="container">
 				<div class="col-md-6" style="padding-bottom: 10px;">
 				<center>
@@ -417,15 +418,8 @@
 				</div>
 			</div>
 		</div>
-<!--<script> 
-	$('#mySelect').change(function () {
-		$('#mySelect').css("background", $("select option:selected").css("background-color"));
-	});
-        webshim.activeLang('en');
-        webshims.polyfill('forms');
-        webshims.cfg.no$Switch = true;
-    </script>-->
+
 		<script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-		<script src = "js/bootstrap.js"></script>
+		<script src = "/js/bootstrap.js"></script>
 	</body>
 </html>
