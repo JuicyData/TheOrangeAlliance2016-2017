@@ -4,8 +4,8 @@
 		<title>The Orange Alliance</title>
 		<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 		<meta name = "viewport" content="width=device-width, initial-scale=1.0">
-		<link href = "css/bootstrap.min.css" rel = "stylesheet" type="text/css">
-		<link href = "css/styles.css" rel = "stylesheet" type="text/css">
+		<link href = "/css/bootstrap.min.css" rel = "stylesheet" type="text/css">
+		<link href = "/css/styles.css" rel = "stylesheet" type="text/css">
 		<link rel="apple-touch-icon" sizes="152x152" href="https://sites.google.com/site/filehostdummysite1234/files/theorangealliance/apple-touch-icon.png?v=vMrqOno5qk">
 		<link rel="icon" type="image/png" href="https://sites.google.com/site/filehostdummysite1234/files/theorangealliance/favicon-32x32.png?v=vMrqOno5qk" sizes="32x32">
 		<link rel="icon" type="image/png" href="https://sites.google.com/site/filehostdummysite1234/files/theorangealliance/favicon-16x16.png?v=vMrqOno5qk" sizes="16x16">
@@ -17,7 +17,6 @@
 		<meta name="msapplication-config" content="https://sites.google.com/site/filehostdummysite1234/files/theorangealliance/browserconfig.xml?v=vMrqOno5qk">
 		<meta name="theme-color" content="#ff9500">
 		<script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-		<script src="js-webshim/minified/polyfiller.js"></script>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 		<script type="text/javascript">
 		$(document).ready(function() { 
@@ -53,13 +52,14 @@
 	</head>
 	<body>
 		<div class="navbar navbar-default navbar-fixed-top">
+			<div style = "margin-bottom: 0px;" class="navbar navbar-default navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
-					<a class="nav-brand" href="http://theorangealliance.tk:8080/"> 
+					<a class="nav-brand" href="/"> 
 					<img style="max-width:50px" src="/images/logo.png"> 
 					<span class="logo hidden-xs">The Orange Alliance</span>
 					</a>
-					<a class="nav-brand" href="http://theorangealliance.tk:8080/"></a>
+					<a class="nav-brand" href="/"></a>
 					<button class = "navbar-toggle" data-toggle = "collapse" data-target = ".navHeaderCollapse">
 						<span class = "icon-bar"></span>
 						<span class = "icon-bar"></span>
@@ -68,12 +68,13 @@
 				</div>
 				<div class = "collapse navbar-collapse navHeaderCollapse">
 					<ul class = "nav navbar-nav navbar-right">
-						<li ><a href = "http://theorangealliance.tk:8080/">Home</a></li>
-						<li><a href = "http://theorangealliance.tk:8080/events/velocity-vortex.php">Events</a></li>
-						<li class = "active"><a href = "http://theorangealliance.tk:8080/input-data.php">Input Match Results</a></li>
+						<li ><a href = "/">Home</a></li>
+						<li ><a href = "/events/velocity-vortex.php">Events</a></li>
+						<li class = "active" ><a href = "/input-data.php">Input Match Results</a></li>
 					</ul>
 				</div>
 			</div>
+		</div>
 		</div>
 		
 		<div class="content">
@@ -394,13 +395,17 @@
 			AllOfIt();
 		?>
 		</div>
-				<div class="footer">
+		<div class="footer">
 			<div class="container">
 				<div class="col-md-6" style="padding-bottom: 10px;">
 				<center>
 				Designed by:
+				Cameron DeMille, 
+				Michael Leonffu, 
+				Ryan Nemiroff,
 				Team 8097 Botcats,
 				Team 9261 Level Up,
+				and
 				Team 10809 Crow Force 5
 				</center>
 				</div>
@@ -413,15 +418,8 @@
 				</div>
 			</div>
 		</div>
-<script> 
-	$('#mySelect').change(function () {
-		$('#mySelect').css("background", $("select option:selected").css("background-color"));
-	});
-        webshim.activeLang('en');
-        webshims.polyfill('forms');
-        webshims.cfg.no$Switch = true;
-    </script>
+
 		<script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-		<script src = "js/bootstrap.js"></script>
+		<script src = "/js/bootstrap.js"></script>
 	</body>
 </html>
