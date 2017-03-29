@@ -58,8 +58,8 @@
 				<div class = "collapse navbar-collapse navHeaderCollapse">
 					<ul class = "nav navbar-nav navbar-right">
 						<li ><a href = "/">Home</a></li>
-						<li class = "active"><a href = "/events/velocity-vortex.php">Events</a></li>
-						<li ><a href = "/input-data.php">Input Match Results</a></li>
+						<li class = "active"><a href = "/events/velocity-vortex.html">Events</a></li>
+						<li ><a href = "/input-data.html">Input Match Results</a></li>
 					</ul>
 				</div>
 			</div>
