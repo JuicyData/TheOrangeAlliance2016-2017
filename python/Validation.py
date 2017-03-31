@@ -19,6 +19,7 @@ class Validation(Foundation):
 	
 		#Mongo Stuff
 		self.InitFoundation(collectionName)
+		print '-----VALIDATION-----'
 		
 		#------------------------Input Data Match Results------------------------------------------
 

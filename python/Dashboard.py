@@ -9,6 +9,8 @@ class Dashboard(Foundation):
 				
 	def __init__(self, collectionName):
 		self.InitFoundation(collectionName)
+		print '-----DASHBOARD-----'
+
 		teamNumbers = self.UniqueTeamList()
 
 		#TODO: Don't use average scores, but use max score of the day. Best complementary team falls short of max scores the least, but any time max score is exceeded, that is not a factor since that is not complementing and probably impossible

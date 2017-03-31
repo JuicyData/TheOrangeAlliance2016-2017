@@ -35,6 +35,7 @@ class AverageScoresData(Foundation):
 				
 	def __init__(self, collectionName):
 		self.InitFoundation(collectionName)
+		print '-----AVERAGE SCORES DATA-----'
 
 		self.data = {}
 		teamNumbers = self.UniqueTeamList()

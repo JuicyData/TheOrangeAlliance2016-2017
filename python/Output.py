@@ -7,7 +7,8 @@ from Foundation import Foundation
 class Output(Foundation):
 	def __init__(self, collectionName):
 		self.InitFoundation(collectionName)
-		
+		print '-----OUTPUT-----'
+
 		teamList = self.UniqueTeamList()
 		matchesThatTeamPlayedAndAlliance = self.WhichMatchesDidThatTeamPlayAndWhatAlliance(teamList)
 		

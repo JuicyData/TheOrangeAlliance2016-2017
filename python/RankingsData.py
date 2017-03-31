@@ -8,6 +8,7 @@ class RankingsData(Foundation):
 		
 	def __init__(self, collectionName):
 		self.InitFoundation(collectionName)
+		print '-----RANKGINGS DATA-----'
 
 		self.data = {}
 		teamList = self.UniqueTeamList()
