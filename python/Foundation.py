@@ -3,6 +3,8 @@
 #Import
 from pymongo import MongoClient
 from pprint import pprint
+import os
+import json
 
 class Foundation(object):
 	'I am a CLASSSSSS!'
@@ -13,8 +15,26 @@ class Foundation(object):
 	def InitFoundation(self, collectionName, debug = False):
 		print '-----START OF FOUNDATION-----'
 
+		#Configuring MongoDB host
+		path = os.path.dirname(os.path.realpath(__file__))
+		host = ""
+		port = ""
+		try:
+			file = open(path+"/mongodb_config.json", 'r')
+			config = json.load(file)
+			host = config["host"]
+			port = config["port"]
+		except IOError:
+			file = open(path+"/mongodb_config.json", 'w')
+			file.write('{\n\t"host": "",\n\t"port": ""\n}')
+		file.close()
+
 		#MongoStuff
-		client = MongoClient()
+		if (not host == ""):
+			client = MongoClient("mongodb://"+host+":"+port)
+			print "connecting to mongodb://"+host+":"+port
+		else:
+			client = MongoClient()
 		db = client.TheOrangeAlliance
 		self.teamCollection = db.Teams
 		self.collectionDataValidation = db.DataValidation
