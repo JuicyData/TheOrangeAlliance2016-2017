@@ -318,16 +318,12 @@
 		<?php
 			require 'input.php';
 			//MongoDBSetup
-				// connect to mongodb
-				$m = new MongoClient();
-				// select a database
-				$db = $m->TheOrangeAlliance;
-				$collectionName = "Y" . TimeTime($_POST['matchDate']) . PlaceID($_POST['matchPlace'], 'rainbow') . 'Raw';
-				$collection = $db->$collectionName;
+			// connect to mongodb
+			$manager = new MongoDB\Driver\Manager();
+			$collectionName = "Y" . TimeTime($_POST['matchDate']) . PlaceID($_POST['matchPlace'], 'rainbow') . 'Raw';
 
 			//Generates the Match array for documentation
-			
-			$maxRows = 123; //intiger
+			$maxRows = 123; //integer
 			for($row = 1; $_POST[$row . "red1"] != "" ; $row++){
 				$maxRows = $row;
 			};
@@ -361,7 +357,9 @@
 
 				"Match" => $matchArray
 			);
-			$collection->insert($document);
+			$bulk = new MongoDB\Driver\BulkWrite();
+			$bulk->insert($document);
+			$manager->executeBulkWrite('TheOrangeAlliance.'.$collectionName, $bulk);
 			CreateDBLog(
 				$collectionName,
 				"ScheduleInput",
