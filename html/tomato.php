@@ -33,27 +33,30 @@
 		}
 	}
 	function RankingsTable($datePlace, $dataValidation){
-		$m = new MongoClient();
-		$c = $m->selectDB('TheOrangeAllianceTest')->selectCollection($datePlace);
-		$cursor = $c->find(['MetaData.MetaData' => 'RankingsOutput' ,'MetaData.InputID' => $dataValidation]);
+		$manager = new MongoDB\Driver\Manager();
+		$query = new MongoDB\Driver\Query(['MetaData.MetaData' => 'RankingsOutput' ,'MetaData.InputID' => $dataValidation]);
+		$cursor = $manager->executeQuery('TheOrangeAlliance.'.$datePlace, $query);
+		$cursor->setTypeMap(['root' => 'array', 'document' => 'array', 'array' => 'array']);
 
 		foreach($cursor as $document){
 			PrintTable($document['Rankings']);
 		}
 	}
 	function MatchHistoryTable($datePlace, $dataValidation){
-		$m = new MongoClient();
-		$c = $m->selectDB('TheOrangeAllianceTest')->selectCollection($datePlace);
-		$cursor = $c->find(['MetaData.MetaData' => 'MatchOutput' ,'MetaData.InputID' => $dataValidation]);
+		$manager = new MongoDB\Driver\Manager();
+		$query = new MongoDB\Driver\Query(['MetaData.MetaData' => 'MatchOutput' ,'MetaData.InputID' => $dataValidation]);
+		$cursor = $manager->executeQuery('TheOrangeAlliance.'.$datePlace, $query);
+		$cursor->setTypeMap(['root' => 'array', 'document' => 'array', 'array' => 'array']);
 
 		foreach($cursor as $document){
 			PrintTable($document['MatchHistory']);
 		}
 	}
 	function AverageScoresTable($datePlace, $dataValidation){
-		$m = new MongoClient();
-		$c = $m->selectDB('TheOrangeAllianceTest')->selectCollection($datePlace);
-		$cursor = $c->find(['MetaData.MetaData' => 'AverageScoresOutput' ,'MetaData.InputID' => $dataValidation]);
+		$manager = new MongoDB\Driver\Manager();
+		$query = new MongoDB\Driver\Query(['MetaData.MetaData' => 'AverageScoresOutput' ,'MetaData.InputID' => $dataValidation]);
+		$cursor = $manager->executeQuery('TheOrangeAlliance.'.$datePlace, $query);
+		$cursor->setTypeMap(['root' => 'array', 'document' => 'array', 'array' => 'array']);
 
 		foreach($cursor as $document){
 			PrintTable($document['AverageScores']);

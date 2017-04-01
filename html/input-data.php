@@ -2,12 +2,10 @@
 	require 'input.php';
 	function AllOfIt(){
 	//Loading and setting up the mongodb PHP
-	$m = new MongoClient();
-		// select a database
-		$db = $m->TheOrangeAlliance;
-		$collectionName = "Y" . TimeTime($_POST['matchDate']) . PlaceID($_POST['matchPlace'], 'rainbow') . "Raw";
-		$collection = $db->$collectionName;
+	$manager = new MongoDB\Driver\Manager();
+	//$m = new MongoClient();
 
+	$collectionName = "Y" . TimeTime($_POST['matchDate']) . PlaceID($_POST['matchPlace'], 'rainbow') . "Raw";
 	$document = array(
 		"MetaData" => array(
 			"MetaData" => "MatchInputRaw",
@@ -46,7 +44,9 @@
 			)
 		)
 	);
-	$collection->insert($document);
+	$bulk = new MongoDB\Driver\BulkWrite();
+	$bulk->insert($document);
+	$manager->executeBulkWrite('TheOrangeAlliance.'.$collectionName, $bulk);
 	CreateDBLog(
 		$collectionName,
 		"MatchInput",
