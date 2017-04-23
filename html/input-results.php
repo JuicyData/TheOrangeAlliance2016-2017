@@ -144,12 +144,9 @@
 		<?php
 			require 'input.php';
 			//MongoDBSetup
-				// connect to mongodb
-				$m = new MongoClient();
-				// select a database
-				$db = $m->TheOrangeAlliance;
-				$collectionName = "Y" . TimeTime($_POST['matchDate']) . PlaceID($_POST['matchPlace'], 'rainbow');
-				$collection = $db->$collectionName;
+			// connect to mongodb
+			$manager = new MongoDB\Driver\Manager();
+			$collectionName = "Y" . TimeTime($_POST['matchDate']) . PlaceID($_POST['matchPlace'], 'rainbow');
 			$document = array(
 				"MetaData" => array(
 					"MetaData" => "ResultsInput",
@@ -185,7 +182,9 @@
 				)
 			);
 			if($_POST['matchNumber'] != ''){
-				$collection->insert($document);
+				$bulk = new MongoDB\Driver\BulkWrite();
+				$bulk->insert($document);
+				$manager->executeBulkWrite('TheOrangeAlliance.'.$collectionName, $bulk);
 			}
 			CreateDBLog(
 				$collectionName,

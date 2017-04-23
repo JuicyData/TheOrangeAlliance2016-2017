@@ -1,9 +1,10 @@
 <?php
 	
 	function PlaceID($placeFullAddress, $dataValidation){
-		$m = new MongoClient();
-		$c = $m->selectDB('TheOrangeAlliance')->selectCollection('Places');
-		$cursor = $c->find(['MetaData.MetaData' => 'Places', 'MetaData.InputID' => $dataValidation]);
+		$manager = new MongoDB\Driver\Manager();
+		$query = new MongoDB\Driver\Query(['MetaData.MetaData' => 'Places', 'MetaData.InputID' => $dataValidation]);
+		$cursor = $manager->executeQuery('TheOrangeAlliance.Places', $query);
+		$cursor->setTypeMap(['root' => 'array', 'document' => 'array', 'array' => 'array']);
 		$placeID = 'ERROR';
 		foreach($cursor as $document){
 			if($document['PlaceInformation']['PlaceFullAddress'] == $placeFullAddress){
@@ -26,9 +27,10 @@
 		return $timeFinal;
 	}
 	function ValidationValue($validationKey){
-		$m = new MongoClient();
-		$c = $m->selectDB('TheOrangeAlliance')->selectCollection('DataValidation');
-		$cursor = $c->find(['MetaData.MetaData' => 'ValidationKey', 'ValidationKey.KeyIdentity.Key' => $validationKey]);
+		$manager = new MongoDB\Driver\Manager();
+		$query = new MongoDB\Driver\Query(['MetaData.MetaData' => 'ValidationKey', 'ValidationKey.KeyIdentity.Key' => $validationKey]);
+		$cursor = $manager->executeQuery('TheOrangeAlliance.DataValidation', $query);
+		$cursor->setTypeMap(['root' => 'array', 'document' => 'array', 'array' => 'array']);
 		$validationKeyValue = 2;
 		foreach($cursor as $document){
 			$validationKeyValue = $document['ValidationKey']['KeyInformation']['KeyRank'];
@@ -64,8 +66,7 @@
 		return $translated;
 	}
 	function CreateDBLog($datePlace, $data, $timeStamp, $inputID, $inputType, $dataValidation){
-		$m = new MongoClient();
-		$c = $m->selectDB('TheOrangeAlliance')->selectCollection('Log');
+		$manager = new MongoDB\Driver\Manager();
 		$document = array(
 			"MetaData" => array(
 				"MetaData" => "LogInput",
@@ -83,7 +84,9 @@
 			)
 		);
 		if($datePlace != '20ERROR'){
-			$c->insert($document);
+			$bulk = new MongoDB\Driver\BulkWrite();
+			$bulk->insert($document);
+			$manager->executeBulkWrite('TheOrangeAlliance.'.$datePlace, $bulk);
 		}
 	}
 ?>

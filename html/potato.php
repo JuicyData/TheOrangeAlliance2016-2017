@@ -88,9 +88,10 @@
 		return $finalResultClass;
 	}
 	function RankingsTable($datePlace){
-		$m = new MongoClient();
-		$c = $m->selectDB('TheOrangeAlliance')->selectCollection($datePlace);
-		$cursor = $c->find(['MetaData.MetaData' => 'RankingsOutput']);
+		$manager = new MongoDB\Driver\Manager();
+		$query = new MongoDB\Driver\Query(['MetaData.MetaData' => 'RankingsOutput']);
+		$cursor = $manager->executeQuery('TheOrangeAlliance.'.$datePlace, $query);
+		$cursor->setTypeMap(['root' => 'array', 'document' => 'array', 'array' => 'array']);
 		foreach($cursor as $document){
 			foreach($document['Rankings'] as $rank){
 				echo '<tr>';
@@ -112,9 +113,10 @@
 		}
 	}
 	function MatchHistoryTable($datePlace){
-		$m = new MongoClient();
-		$c = $m->selectDB('TheOrangeAlliance')->selectCollection($datePlace);
-		$cursor = $c->find(['MetaData.MetaData' => 'MatchOutput']);
+		$manager = new MongoDB\Driver\Manager();
+		$query = new MongoDB\Driver\Query(['MetaData.MetaData' => 'MatchOutput']);
+		$cursor = $manager->executeQuery('TheOrangeAlliance.'.$datePlace, $query);
+		$cursor->setTypeMap(['root' => 'array', 'document' => 'array', 'array' => 'array']);
 		foreach($cursor as $document){
 			foreach($document['MatchHistory'] as $matchNumber){
 				foreach($matchNumber as $alliance){
@@ -144,9 +146,10 @@
 		}
 	}
 	function AverageScoresTable($datePlace){
-		$m = new MongoClient();
-		$c = $m->selectDB('TheOrangeAlliance')->selectCollection($datePlace);
-		$cursor = $c->find(['MetaData.MetaData' => 'AverageScoresOutput']);
+		$manager = new MongoDB\Driver\Manager();
+		$query = new MongoDB\Driver\Query(['MetaData.MetaData' => 'AverageScoresOutput']);
+		$cursor = $manager->executeQuery('TheOrangeAlliance.'.$datePlace, $query);
+		$cursor->setTypeMap(['root' => 'array', 'document' => 'array', 'array' => 'array']);
 		foreach($cursor as $document){
 			foreach($document['AverageScores'] as $teamNumber){
 				echo '<tr>';
