@@ -13,7 +13,7 @@ class Foundation(object):
 		self.InitFoundation(collectionName, debug)
 
 	def InitFoundation(self, collectionName, debug = False):
-		print '-----START OF FOUNDATION-----'
+		print '-----INITIALIZING FOUNDATION-----'
 
 		#Configuring MongoDB host
 		path = os.path.dirname(os.path.realpath(__file__))
@@ -45,7 +45,7 @@ class Foundation(object):
 		self.collectionName = collectionName
 		self.debug = debug
 
-		print '-----END OF FOUNDATION-----'
+		print '-----DONE INITIALIZING FOUNDATION-----'
 
 	#Functions
 	def WhichMatchesDidThatTeamPlayAndWhatAlliance(self, teamList):

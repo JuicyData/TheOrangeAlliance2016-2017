@@ -8,6 +8,8 @@ class MatchData(Foundation):
 		
 	def __init__(self, collectionName):
 		self.InitFoundation(collectionName)
+		print '-----MATCH DATA-----'
+
 		teamList = self.UniqueTeamList()
 		matchesThatTeamPlayedAndAlliance = self.WhichMatchesDidThatTeamPlayAndWhatAlliance(teamList)
 		

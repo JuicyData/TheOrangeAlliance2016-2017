@@ -12,6 +12,7 @@ class Opr(Foundation):
 
 	def __init__(self, collectionName):
 		self.InitFoundation(collectionName)
+		print '-----OPR/CCWM DATA-----'
 
 		self.data = {}
 		for document in self.collection.find({'MetaData.MetaData': 'ResultsInput'}):
