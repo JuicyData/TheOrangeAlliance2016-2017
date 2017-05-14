@@ -15,7 +15,69 @@ velocityVortex = {
 		"Season": "2016-2017",
 		"Name": "Velocity Vortex"
 	},
-	"DisplayNames": {
+	"Scoring": {
+		"AUTO": {
+			"Parking": {
+				"Type": "String",
+				"Options": {"NoParking": 0, "PartiallyCenter": 5, "PartiallyCorner": 5, "FullyCenter": 10, "FullyCorner": 10},
+				"Default": "NoParking" #Always the option worth zero points
+			},
+			"CenterParticles": {
+				"Type": "Number",
+				"Points": 15
+			},
+			"CornerParticles": {
+				"Type": "Number",
+				"Points": 5
+			},
+			"Beacons": {
+				"Type": "Number",
+				"Points": 30
+			},
+			"CapBall": {
+				"Type": "YesNo", #This implies that the two possible options are "Yes" (worth specified points) and "No" (0 points)
+				"Points": 5
+			}
+		},
+		"DRIVER": {
+			"CenterParticles": {
+				"Type": "Number",
+				"Points": 5
+			},
+			"CornerParticles": {
+				"Type": "Number",
+				"Points": 1
+			}
+		},
+		"END": {
+			"CapBall": {
+				"Type": "String",
+				"Options": {"CapBallOnFloor": 0, "CapBallRaised": 10, "CapBallAboveCenter": 20, "CapBallInCenter": 40},
+				"Default": "CapBallOnFloor" #Always the option worth zero points
+			},
+			"Beacons": {
+				"Type": "Number",
+				"Points": 10
+			}
+		}
+	},
+	"DisplayOrder": { #This is necessary because dictionaries do not care about order. Arrays are used to specify the order.
+		"Fields": {
+			"AUTO" : ["Parking", "CenterParticles", "CornerParticles", "CapBall", "Beacons"],
+			"DRIVER": ["CenterParticles", "CornerParticles"],
+			"END": ["Beacons", "CapBall"]
+		},
+		"Options": {
+			"AUTO" : {
+				"Parking": ["NoParking", "PartiallyCenter", "PartiallyCorner", "FullyCenter", "FullyCorner"]
+			},
+			"DRIVER": {},
+			"END": {
+				"CapBall": ["CapBallOnFloor", "CapBallRaised", "CapBallAboveCenter", "CapBallInCenter"]
+			}
+		}
+	},
+	"DisplayNames": { #Specifies names to be displayed on the website
 		"Fields": {
 			"AUTO": {
 				"Parking": "Parking",
@@ -42,7 +104,7 @@ velocityVortex = {
 					"FullyCenter": "Fully Center",
 					"FullyCorner": "Fully Corner"
 				},
-				"CapBall": {
+				"CapBall": { #This is where "Yes" and "No" can be translated to mean something else, if need be, such as "On" and "Off"
 					"Yes": "Yes",
 					"No": "No"
 				}
@@ -55,68 +117,6 @@ velocityVortex = {
 					"CapBallAboveCenter": "Raised Above Vortex",
 					"CapBallInCenter": "In Center Vortex"
 				}
-			}
-		}
-	},
-	"DisplayOrder": {
-		"Fields": {
-			"AUTO" : ["Parking", "CenterParticles", "CornerParticles", "CapBall", "Beacons"],
-			"DRIVER": ["CenterParticles", "CornerParticles"],
-			"END": ["Beacons", "CapBall"]
-		},
-		"Options": {
-			"AUTO" : {
-				"Parking": ["NoParking", "PartiallyCenter", "PartiallyCorner", "FullyCenter", "FullyCorner"]
-			},
-			"DRIVER": {},
-			"END": {
-				"CapBall": ["CapBallOnFloor", "CapBallRaised", "CapBallAboveCenter", "CapBallInCenter"]
-			}
-		}
-	},
-	"Scoring": {
-		"AUTO": {
-			"Parking": {
-				"Type": "String",
-				"Options": {"NoParking": 0, "PartiallyCenter": 5, "PartiallyCorner": 5, "FullyCenter": 10, "FullyCorner": 10},
-				"Default": "NoParking"
-			},
-			"CenterParticles": {
-				"Type": "Number",
-				"Points": 15
-			},
-			"CornerParticles": {
-				"Type": "Number",
-				"Points": 5
-			},
-			"Beacons": {
-				"Type": "Number",
-				"Points": 30
-			},
-			"CapBall": {
-				"Type": "YesNo",
-				"Points": 5
-			}
-		},
-		"DRIVER": {
-			"CenterParticles": {
-				"Type": "Number",
-				"Points": 5
-			},
-			"CornerParticles": {
-				"Type": "Number",
-				"Points": 1
-			}
-		},
-		"END": {
-			"CapBall": {
-				"Type": "String",
-				"Options": {"CapBallOnFloor": 0, "CapBallRaised": 10, "CapBallAboveCenter": 20, "CapBallInCenter": 40},
-				"Default": "CapBallOnFloor"
-			},
-			"Beacons": {
-				"Type": "Number",
-				"Points": 10
 			}
 		}
 	}

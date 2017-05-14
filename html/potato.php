@@ -149,7 +149,9 @@
 			PutItInATH('Result R-B');
 			PutItInATH('Score');
 			$gamePeriodHighlights = ['AUTO' => 'red', 'DRIVER' => 'blue', 'END' => 'green'];
-			foreach ($gameFields as $gamePeriod => $fields) {
+			$gamePeriods = array('AUTO', 'DRIVER', 'END');
+			foreach ($gamePeriods as $gamePeriod) {
+				$fields = $gameFields[$gamePeriod];
 				foreach ($fields as $field) {
 					PutItInATH($gameObjectives['DisplayNames']['Fields'][$gamePeriod][$field], $gamePeriodHighlights[$gamePeriod]);
 				}
@@ -162,14 +164,15 @@
 					foreach($alliance as $teamNumber){
 						echo '<tr>';
 						PutItInATD($teamNumber['MatchNumber']);
-						PutItInATD($teamNumber['Alliance'] ,AllianceColor($teamNumber['Alliance']));
+						PutItInATD($teamNumber['Alliance'], AllianceColor($teamNumber['Alliance']));
 						PutItInATD($teamNumber['TeamNumber']);
 						PutItInATD($teamNumber['TeamName']);
 						PutItInATD($teamNumber['TeamRank']);
 						PutItInATD(RoundValue($teamNumber['OPR']));
 						PutItInATD(ResultsRB($teamNumber['ResultRed'],$teamNumber['ResultBlue']), ResultsRBClass($teamNumber['ResultRed'],$teamNumber['ResultBlue']));
 						PutItInATD($teamNumber['Score']);
-						foreach($gameFields as $gamePeriod => $fields){
+						foreach ($gamePeriods as $gamePeriod) {
+							$fields = $gameFields[$gamePeriod];
 							foreach($fields as $field) {
 								$fieldType = $gameObjectives['Scoring'][$gamePeriod][$field]['Type'];
 								if($fieldType == 'String' || $fieldType == 'YesNo'){
@@ -205,7 +208,9 @@
 			PutItInATH('Average Auto', $gamePeriodHighlights['AUTO']);
 			PutItInATH('Average Driver', $gamePeriodHighlights['DRIVER']);
 			PutItInATH('Average End', $gamePeriodHighlights['END']);
-			foreach ($gameFields as $gamePeriod => $fields) {
+			$gamePeriods = array('AUTO', 'DRIVER', 'END');
+			foreach ($gamePeriods as $gamePeriod) {
+				$fields = $gameFields[$gamePeriod];
 				foreach ($fields as $field) {
 					$fieldType = $gameObjectives['Scoring'][$gamePeriod][$field]['Type'];
 					if($fieldType == 'String'){
@@ -229,7 +234,8 @@
 				PutItInATD($teamNumber['AverageScores']['AverageAuto']);
 				PutItInATD($teamNumber['AverageScores']['AverageDriver']);
 				PutItInATD($teamNumber['AverageScores']['AverageEnd']);
-				foreach ($gameFields as $gamePeriod => $fields) {
+				foreach ($gamePeriods as $gamePeriod) {
+					$fields = $gameFields[$gamePeriod];
 					foreach ($fields as $field) {
 						$fieldType = $gameObjectives['Scoring'][$gamePeriod][$field]['Type'];
 						if($fieldType == 'String'){

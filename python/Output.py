@@ -128,9 +128,9 @@ class Output(Foundation):
 							AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)][gamePeriod][field] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"][gamePeriod][field]
 
 		for team in teamList:
+			MatchOutput["MatchHistory"]["TeamNumber" + str(team)] = {}
 			for alliance in ["Red", "Blue"]:
 				matchesPlayed = matchesThatTeamPlayedAndAlliance[team][alliance]
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)] = {}
 				for matchNumber in matchesPlayed:
 					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)] = {}
 					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["Alliance"+alliance] = {}
