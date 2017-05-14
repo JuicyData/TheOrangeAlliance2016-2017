@@ -19,7 +19,6 @@ while True:
 
 	# Reliant on input only
 	RankingsData(collectionName)
-	MatchData(collectionName)
 	AverageScoresData(collectionName)
 	Opr(collectionName)
 

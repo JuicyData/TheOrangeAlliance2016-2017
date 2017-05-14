@@ -9,8 +9,8 @@ class AverageScoresData(Foundation):
 	def formatNumber(self, number):
 		return format(number, '.2f').rstrip('0').rstrip('.')
 
-	def unformatNumber(self, string):
-		return float(string.rstrip('%'))
+	def formatPercent(self, number):
+		return format(number*100, '.2f').rstrip('0').rstrip('.') + "%"
 
 	def getPercentCondition(self, teamNumber, section, value, condition):
 		if teamNumber not in self.data:
@@ -21,7 +21,7 @@ class AverageScoresData(Foundation):
 			total = total+1
 			if document["GameInformation"][section][value] == condition:
 				conditionCount = conditionCount+1
-		return self.formatNumber((conditionCount/float(total))*100) + "%"
+		return conditionCount/float(total)
 
 	def getAverageNum(self, teamNumber, section, value):
 		if teamNumber not in self.data:
@@ -31,7 +31,7 @@ class AverageScoresData(Foundation):
 		for document in self.data[teamNumber]:
 			total = total+1
 			num = num + document["GameInformation"][section][value]
-		return self.formatNumber(num/float(total))
+		return num/float(total)
 				
 	def __init__(self, collectionName):
 		self.InitFoundation(collectionName)
@@ -44,14 +44,19 @@ class AverageScoresData(Foundation):
 				self.data[str(document["MatchInformation"]["TeamNumber"])] = []
 			self.data[str(document["MatchInformation"]["TeamNumber"])].append(document)
 
+		season = self.Season()
+		gameObjectives = self.GameObjectives(season)
+		gameFields = gameObjectives["DisplayOrder"]["Fields"]
+
 		finalDictionary = {}
 		finalDictionary["MetaData"] = {}
 		finalDictionary["MetaData"]["MetaData"] = "AverageScoresData"
 		finalDictionary["MetaData"]["TimeStamp"] = "anytime"
 		finalDictionary["MetaData"]["DatePlace"] = collectionName
+		finalDictionary["MetaData"]["Season"] = season
 		finalDictionary["MetaData"]["InputID"] = "pi"
 		finalDictionary["AverageScores"] = {};
-		
+
 		for teamNumber in teamNumbers:
 			teamNumber = str(teamNumber)
 
@@ -59,29 +64,25 @@ class AverageScoresData(Foundation):
 			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["TeamNumber"] = teamNumber
 			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"] = {}
 
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"] =  {}
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["Parking"] = {}
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["Parking"]["NoParking"] = self.getPercentCondition(teamNumber, "AUTO", "RobotParking", "Did Not Park")
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["Parking"]["PartiallyCenter"] = self.getPercentCondition(teamNumber, "AUTO", "RobotParking", "Partially Center")
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["Parking"]["PartiallyCorner"] = self.getPercentCondition(teamNumber, "AUTO", "RobotParking", "Partially Corner")
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["Parking"]["FullyCenter"] = self.getPercentCondition(teamNumber, "AUTO", "RobotParking", "Fully Center")
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["Parking"]["FullyCorner"] = self.getPercentCondition(teamNumber, "AUTO", "RobotParking", "Fully Corner")
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["CenterParticles"] = self.getAverageNum(teamNumber, "AUTO", "ParticlesCenter")
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["CornerParticles"] = self.getAverageNum(teamNumber, "AUTO", "ParticlesCorner")
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["CapBall"] = self.getPercentCondition(teamNumber, "AUTO", "CapBall", "Yes")
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["Beacons"] = self.getAverageNum(teamNumber, "AUTO", "ClaimedBeacons")
+			averageScoresNumbers = {}
 
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["DRIVER"] = {}
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["DRIVER"]["CenterParticles"] = self.getAverageNum(teamNumber, "DRIVER", "ParticlesCenter")
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["DRIVER"]["CornerParticles"] = self.getAverageNum(teamNumber, "DRIVER", "ParticlesCorner")
-
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["END"] = {}
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["END"]["Beacons"] = self.getAverageNum(teamNumber, "END", "AllianceClaimedBeacons")
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["END"]["CapBall"] = {}
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["END"]["CapBall"]["CapBallOnFloor"] = self.getPercentCondition(teamNumber, "END", "CapBall", "On The Ground")
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["END"]["CapBall"]["CapBallRaised"] = self.getPercentCondition(teamNumber, "END", "CapBall", "Raised Off Floor")
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["END"]["CapBall"]["CapBallAboveCenter"] = self.getPercentCondition(teamNumber, "END", "CapBall", "Raised Above Vortex")
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["END"]["CapBall"]["CapBallInCenter"] = self.getPercentCondition(teamNumber, "END", "CapBall", "In Center Vortex")
+			for gamePeriod in gameFields:
+				finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"][gamePeriod] = {}
+				averageScoresNumbers[gamePeriod] = {}
+				for field in gameFields[gamePeriod]:
+					fieldType = gameObjectives["Scoring"][gamePeriod][field]["Type"]
+					if fieldType == "String":
+						finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"][gamePeriod][field] = {}
+						averageScoresNumbers[gamePeriod][field] = {}
+						for option in gameObjectives["DisplayOrder"]["Options"][gamePeriod][field]:
+							averageScoresNumbers[gamePeriod][field][option] = self.getPercentCondition(teamNumber, gamePeriod, field, option)
+							finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"][gamePeriod][field][option] = self.formatPercent(averageScoresNumbers[gamePeriod][field][option])
+					elif fieldType == "Number":
+						averageScoresNumbers[gamePeriod][field] = self.getAverageNum(teamNumber, gamePeriod, field)
+						finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"][gamePeriod][field] = self.formatNumber(averageScoresNumbers[gamePeriod][field])
+					elif fieldType == "YesNo":
+						averageScoresNumbers[gamePeriod][field] = self.getPercentCondition(teamNumber, gamePeriod, field, "Yes")
+						finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"][gamePeriod][field] = self.formatPercent(averageScoresNumbers[gamePeriod][field])
 
 			if teamNumber not in self.data:
 				finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageScore"] = ""
@@ -90,30 +91,21 @@ class AverageScoresData(Foundation):
 				finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageEnd"] = ""
 				continue
 			
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageAuto"] = 0
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageAuto"] += self.unformatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["Parking"]["PartiallyCenter"])/100 * 5
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageAuto"] += self.unformatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["Parking"]["PartiallyCorner"])/100 * 5
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageAuto"] += self.unformatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["Parking"]["FullyCenter"])/100 * 10
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageAuto"] += self.unformatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["Parking"]["FullyCorner"])/100 * 10
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageAuto"] += self.unformatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["CenterParticles"]) * 15
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageAuto"] += self.unformatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["CornerParticles"]) * 5
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageAuto"] += self.unformatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["CapBall"])/100 * 5
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageAuto"] += self.unformatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AUTO"]["Beacons"]) * 30
+			averageScores = {}
+			for gamePeriod in gameFields:
+				averageScores[gamePeriod] = 0
+				for field in gameFields[gamePeriod]:
+					fieldType = gameObjectives["Scoring"][gamePeriod][field]["Type"]
+					if fieldType == "String":
+						for option in gameObjectives["DisplayOrder"]["Options"][gamePeriod][field]:
+							averageScores[gamePeriod] += averageScoresNumbers[gamePeriod][field][option] * gameObjectives["Scoring"][gamePeriod][field]["Options"][option]
+					elif fieldType == "Number" or fieldType == "YesNo":
+						averageScores[gamePeriod] += averageScoresNumbers[gamePeriod][field] * gameObjectives["Scoring"][gamePeriod][field]["Points"]
 
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageDriver"] = 0
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageDriver"] += self.unformatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["DRIVER"]["CenterParticles"]) * 5
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageDriver"] += self.unformatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["DRIVER"]["CornerParticles"]) * 1
-
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageEnd"] = 0
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageEnd"] += self.unformatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["END"]["Beacons"]) * 10
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageEnd"] += self.unformatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["END"]["CapBall"]["CapBallRaised"])/100 * 10
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageEnd"] += self.unformatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["END"]["CapBall"]["CapBallAboveCenter"])/100 * 20
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageEnd"] += self.unformatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["END"]["CapBall"]["CapBallInCenter"])/100 * 40
-
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageScore"] = self.formatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageAuto"] + finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageDriver"] + finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageEnd"])
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageAuto"] = self.formatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageAuto"])
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageDriver"] = self.formatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageDriver"])
-			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageEnd"] = self.formatNumber(finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageEnd"])
+			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageScore"] = self.formatNumber(averageScores["AUTO"] + averageScores["DRIVER"] + averageScores["END"])
+			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageAuto"] = self.formatNumber(averageScores["AUTO"])
+			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageDriver"] = self.formatNumber(averageScores["DRIVER"])
+			finalDictionary["AverageScores"]["TeamNumber" + str(teamNumber)]["AverageScores"]["AverageEnd"] = self.formatNumber(averageScores["END"])
 
 		self.collection.delete_many({'MetaData.MetaData': 'AverageScoresData'})
 		self.collection.insert_one(finalDictionary)

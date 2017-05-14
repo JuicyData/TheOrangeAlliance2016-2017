@@ -11,6 +11,10 @@ class Output(Foundation):
 
 		teamList = self.UniqueTeamList()
 		matchesThatTeamPlayedAndAlliance = self.WhichMatchesDidThatTeamPlayAndWhatAlliance(teamList)
+
+		season = self.Season()
+		gameObjectives = self.GameObjectives(season)
+		gameFields = gameObjectives["DisplayOrder"]["Fields"]
 		
 		rankingsDocument = None
 		for document in self.collection.find({'MetaData.MetaData' : 'RankingsData'}):
@@ -53,6 +57,7 @@ class Output(Foundation):
 		AverageScoresOutput["MetaData"]["MetaData"] = "AverageScoresOutput"
 		AverageScoresOutput["MetaData"]["TimpStamp"] = 7
 		AverageScoresOutput["MetaData"]["DatePlace"] = collectionName
+		AverageScoresOutput["MetaData"]["Season"] = season
 		AverageScoresOutput["MetaData"]["InputID"] = "rainbow"
 		AverageScoresOutput["AverageScores"] = {}
 		
@@ -61,6 +66,7 @@ class Output(Foundation):
 		MatchOutput["MetaData"]["MetaData"] = "MatchOutput"
 		MatchOutput["MetaData"]["TimpStamp"] = 7
 		MatchOutput["MetaData"]["DatePlace"] = collectionName
+		MatchOutput["MetaData"]["Season"] = season
 		MatchOutput["MetaData"]["InputID"] = "rainbow"
 		MatchOutput["MatchHistory"] = {}
 		
@@ -109,139 +115,58 @@ class Output(Foundation):
 				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["AverageAuto"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["AverageAuto"]
 				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["AverageDriver"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["AverageDriver"]
 				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["AverageEnd"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["AverageEnd"]
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["AUTO"] = {}
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["AUTO"]["Parking"] = {}
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["AUTO"]["Parking"]["NoParking"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["AUTO"]["Parking"]["NoParking"]
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["AUTO"]["Parking"]["PartiallyCenter"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["AUTO"]["Parking"]["PartiallyCenter"]
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["AUTO"]["Parking"]["PartiallyCorner"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["AUTO"]["Parking"]["PartiallyCorner"]
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["AUTO"]["Parking"]["FullyCenter"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["AUTO"]["Parking"]["FullyCenter"]
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["AUTO"]["Parking"]["FullyCorner"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["AUTO"]["Parking"]["FullyCorner"]
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["AUTO"]["CenterParticles"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["AUTO"]["CenterParticles"]
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["AUTO"]["CornerParticles"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["AUTO"]["CornerParticles"]
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["AUTO"]["CapBall"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["AUTO"]["CapBall"]
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["AUTO"]["Beacons"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["AUTO"]["Beacons"]
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["DRIVER"] = {}
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["DRIVER"]["CenterParticles"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["DRIVER"]["CenterParticles"]
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["DRIVER"]["CornerParticles"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["DRIVER"]["CornerParticles"]
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["END"] = {}
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["END"]["Beacons"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["END"]["Beacons"]
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["END"]["CapBall"] = {}
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["END"]["CapBall"]["CapBallOnFloor"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["END"]["CapBall"]["CapBallOnFloor"]
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["END"]["CapBall"]["CapBallRaised"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["END"]["CapBall"]["CapBallRaised"]
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["END"]["CapBall"]["CapBallAboveCenter"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["END"]["CapBall"]["CapBallAboveCenter"]
-				AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)]["END"]["CapBall"]["CapBallInCenter"] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"]["END"]["CapBall"]["CapBallInCenter"]
+				
+				for gamePeriod in gameFields:
+					AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)][gamePeriod] = {}
+					for field in gameFields[gamePeriod]:
+						fieldType = gameObjectives["Scoring"][gamePeriod][field]["Type"]
+						if fieldType == "String":
+							AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)][gamePeriod][field] = {}
+							for option in gameObjectives["DisplayOrder"]["Options"][gamePeriod][field]:
+								AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)][gamePeriod][field][option] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"][gamePeriod][field][option]
+						elif fieldType == "Number" or fieldType == "YesNo":
+							AverageScoresOutput["AverageScores"]["TeamNumber" + str(team)][gamePeriod][field] = document["AverageScores"]["TeamNumber" + str(team)]["AverageScores"][gamePeriod][field]
 
 		for team in teamList:
-			tempBlue = matchesThatTeamPlayedAndAlliance[team]["Blue"]
-			tempRed = matchesThatTeamPlayedAndAlliance[team]["Red"]
-			MatchOutput["MatchHistory"]["TeamNumber" + str(team)] = {}
-			for matchNumber in tempBlue:
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)] = {}
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"] = {}
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["TeamNumber"] = team
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["MatchNumber"] = matchNumber
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["Alliance"] = "Blue"
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["OPR"] = savedOPR[str(team)]
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["TeamName"] = self.TeamName(team)
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["TeamRank"] = savedRank[str(team)]
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["AUTO"] = {}
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["DRIVER"] = {}
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["END"] = {}
-				
-				if (matchNumber in resultsInputData):
-					documentResults = resultsInputData[matchNumber]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["ResultRed"] = documentResults["Score"]["Total"]["Red"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["ResultBlue"] = documentResults["Score"]["Total"]["Blue"]
+			for alliance in ["Red", "Blue"]:
+				matchesPlayed = matchesThatTeamPlayedAndAlliance[team][alliance]
+				MatchOutput["MatchHistory"]["TeamNumber" + str(team)] = {}
+				for matchNumber in matchesPlayed:
+					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)] = {}
+					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["Alliance"+alliance] = {}
+					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["Alliance"+alliance]["TeamNumber"] = team
+					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["Alliance"+alliance]["MatchNumber"] = matchNumber
+					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["Alliance"+alliance]["Alliance"] = alliance
+					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["Alliance"+alliance]["OPR"] = savedOPR[str(team)]
+					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["Alliance"+alliance]["TeamName"] = self.TeamName(team)
+					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["Alliance"+alliance]["TeamRank"] = savedRank[str(team)]
+					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["Alliance"+alliance]["AUTO"] = {}
+					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["Alliance"+alliance]["DRIVER"] = {}
+					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["Alliance"+alliance]["END"] = {}
+					
+					if (matchNumber in resultsInputData):
+						documentResults = resultsInputData[matchNumber]
+						MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["Alliance"+alliance]["ResultRed"] = documentResults["Score"]["Total"]["Red"]
+						MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["Alliance"+alliance]["ResultBlue"] = documentResults["Score"]["Total"]["Blue"]
 
-				if ("TeamNumber" + str(team) + "MatchNumber" + str(matchNumber) in matchInputData):
-					documentResults = matchInputData["TeamNumber" + str(team) + "MatchNumber" + str(matchNumber)]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["AUTO"]["Parking"] = documentResults["GameInformation"]["AUTO"]["RobotParking"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["AUTO"]["CenterParticles"] = documentResults["GameInformation"]["AUTO"]["ParticlesCenter"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["AUTO"]["CornerParticles"] = documentResults["GameInformation"]["AUTO"]["ParticlesCorner"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["AUTO"]["CapBall"] = documentResults["GameInformation"]["AUTO"]["CapBall"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["AUTO"]["Beacons"] = documentResults["GameInformation"]["AUTO"]["ClaimedBeacons"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["DRIVER"]["CenterParticles"] = documentResults["GameInformation"]["DRIVER"]["ParticlesCenter"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["DRIVER"]["CornerParticles"] = documentResults["GameInformation"]["DRIVER"]["ParticlesCorner"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["END"]["Beacons"] = documentResults["GameInformation"]["END"]["AllianceClaimedBeacons"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["END"]["CapBall"] = documentResults["GameInformation"]["END"]["CapBall"]
+					if ("TeamNumber" + str(team) + "MatchNumber" + str(matchNumber) in matchInputData):
+						documentResults = matchInputData["TeamNumber" + str(team) + "MatchNumber" + str(matchNumber)]
+						for gamePeriod in gameFields:
+							for field in gameFields[gamePeriod]:
+								MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["Alliance"+alliance][gamePeriod][field] = documentResults["GameInformation"][gamePeriod][field]
 
-					score = 0
-					if documentResults["GameInformation"]["AUTO"]["RobotParking"] == "Partially Center":
-						score += 5
-					if documentResults["GameInformation"]["AUTO"]["RobotParking"] == "Partially Corner":
-						score += 5
-					if documentResults["GameInformation"]["AUTO"]["RobotParking"] == "Fully Center":
-						score += 10
-					if documentResults["GameInformation"]["AUTO"]["RobotParking"] == "Fully Corner":
-						score += 10
-					score += (documentResults["GameInformation"]["AUTO"]["ParticlesCenter"]*15) + (documentResults["GameInformation"]["AUTO"]["ParticlesCorner"]*5)
-					if documentResults["GameInformation"]["AUTO"]["CapBall"] == "Yes":
-						score += 5
-					score += (documentResults["GameInformation"]["AUTO"]["ClaimedBeacons"]*30)
-					score += (documentResults["GameInformation"]["DRIVER"]["ParticlesCenter"]*5)
-					score += (documentResults["GameInformation"]["DRIVER"]["ParticlesCorner"])
-					if documentResults["GameInformation"]["END"]["CapBall"] == "Raised Off Floor":
-						score += 10
-					if documentResults["GameInformation"]["END"]["CapBall"] == "Raised Above Vortex":
-						score += 20
-					if documentResults["GameInformation"]["END"]["CapBall"] == "In Center Vortex":
-						score += 40
-					score += (documentResults["GameInformation"]["END"]["AllianceClaimedBeacons"]*10)
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceBlue"]["Score"] = score
-
-			for matchNumber in tempRed:
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)] = {}
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"] = {}
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["TeamNumber"] = team
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["MatchNumber"] = matchNumber
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["Alliance"] = "Red"
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["OPR"] = savedOPR[str(team)]
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["TeamName"] = self.TeamName(team)
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["TeamRank"] = savedRank[str(team)]
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["AUTO"] = {}
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["DRIVER"] = {}
-				MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["END"] = {}
-
-				if (matchNumber in resultsInputData):
-					documentResults = resultsInputData[matchNumber]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["ResultRed"] = documentResults["Score"]["Total"]["Red"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["ResultBlue"] = documentResults["Score"]["Total"]["Blue"]
-
-				if ("TeamNumber" + str(team) + "MatchNumber" + str(matchNumber) in matchInputData):
-					documentResults = matchInputData["TeamNumber" + str(team) + "MatchNumber" + str(matchNumber)]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["AUTO"]["Parking"] = documentResults["GameInformation"]["AUTO"]["RobotParking"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["AUTO"]["CenterParticles"] = documentResults["GameInformation"]["AUTO"]["ParticlesCenter"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["AUTO"]["CornerParticles"] = documentResults["GameInformation"]["AUTO"]["ParticlesCorner"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["AUTO"]["CapBall"] = documentResults["GameInformation"]["AUTO"]["CapBall"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["AUTO"]["Beacons"] = documentResults["GameInformation"]["AUTO"]["ClaimedBeacons"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["DRIVER"]["CenterParticles"] = documentResults["GameInformation"]["DRIVER"]["ParticlesCenter"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["DRIVER"]["CornerParticles"] = documentResults["GameInformation"]["DRIVER"]["ParticlesCorner"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["END"]["Beacons"] = documentResults["GameInformation"]["END"]["AllianceClaimedBeacons"]
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["END"]["CapBall"] = documentResults["GameInformation"]["END"]["CapBall"]
-
-					score = 0
-					if documentResults["GameInformation"]["AUTO"]["RobotParking"] == "Partially Center":
-						score += 5
-					if documentResults["GameInformation"]["AUTO"]["RobotParking"] == "Partially Corner":
-						score += 5
-					if documentResults["GameInformation"]["AUTO"]["RobotParking"] == "Fully Center":
-						score += 10
-					if documentResults["GameInformation"]["AUTO"]["RobotParking"] == "Fully Corner":
-						score += 10
-					score += (documentResults["GameInformation"]["AUTO"]["ParticlesCenter"]*15) + (documentResults["GameInformation"]["AUTO"]["ParticlesCorner"]*5)
-					if documentResults["GameInformation"]["AUTO"]["CapBall"] == "Yes":
-						score += 5
-					score += (documentResults["GameInformation"]["AUTO"]["ClaimedBeacons"]*30)
-					score += (documentResults["GameInformation"]["DRIVER"]["ParticlesCenter"]*5)
-					score += (documentResults["GameInformation"]["DRIVER"]["ParticlesCorner"])
-					if documentResults["GameInformation"]["END"]["CapBall"] == "Raised Off Floor":
-						score += 10
-					if documentResults["GameInformation"]["END"]["CapBall"] == "Raised Above Vortex":
-						score += 20
-					if documentResults["GameInformation"]["END"]["CapBall"] == "In Center Vortex":
-						score += 40
-					score += (documentResults["GameInformation"]["END"]["AllianceClaimedBeacons"]*10)
-					MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["AllianceRed"]["Score"] = score
+						score = 0
+						for gamePeriod in gameFields:
+							for field in gameFields[gamePeriod]:
+								fieldType = gameObjectives["Scoring"][gamePeriod][field]["Type"]
+								value = documentResults["GameInformation"][gamePeriod][field]
+								if fieldType == "String":
+									score += gameObjectives["Scoring"][gamePeriod][field]["Options"][value]
+								elif fieldType == "Number":
+									score += gameObjectives["Scoring"][gamePeriod][field]["Points"] * value
+								elif fieldType == "YesNo" and value == "Yes":
+									score += gameObjectives["Scoring"][gamePeriod][field]["Points"]
+						MatchOutput["MatchHistory"]["TeamNumber" + str(team)]["MatchNumber" + str(matchNumber)]["Alliance"+alliance]["Score"] = score
 		
 		#pprint(RankingsOutput)
 		#pprint(MatchOutput)

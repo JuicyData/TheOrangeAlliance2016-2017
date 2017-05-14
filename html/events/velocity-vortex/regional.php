@@ -118,32 +118,9 @@
 					<div class="greencircle"></div><span class="key">= End Game Period</span>
 					
 						<table class="table table-striped table-bordered" id="inputTable2">
-							<thead>
-								<tr>
-									<th>#</th>
-									<th>Alliance</th>
-									<th>Team Number</th>
-									<th>Team Name</th>
-									<th>Rank</th>
-									<th>OPR*</th>
-									<th>Result R-B</th>
-									<th>Score</th>
-									<th class="red">Parking</th>
-									<th class="red">Center Particles</th>
-									<th class="red">Corner Particles</th>
-									<th class="red">Cap Ball</th>
-									<th class="red">Beacons</th>
-									<th class="blue">Center Particles</th>
-									<th class="blue">Corner Particles</th>
-									<th class="green">Beacons</th>
-									<th class="green">Cap Ball</th>
-								</tr>
-							</thead>
-							<tbody>
-							<?php
-								MatchHistoryTable('Y201702255');
-							?>
-							</tbody>
+						<?php
+							MatchHistoryTable('Y201702255');
+						?>
 						</table>
 					</div>
 					<div style="padding-top: 10px;" id="average-scores"  class="tab-pane fade table-responsive">
@@ -152,37 +129,9 @@
 					<div class="greencircle"></div><span class="key">= End Game Period</span>
 					
 						<table class="table table-striped table-bordered" id="inputTable3">
-							<thead>
-								<tr>
-									<th>Team Number</th>
-									<th>Team Name</th>
-									<th>Average Score</th>
-									<th class="red">Average Auto</th>
-									<th class="blue">Average Driver</th>
-									<th class="green">Average End</th>
-									<th class="red">No Parking</th>
-									<th class="red">Partially Center</th>
-									<th class="red">Partially Corner</th>
-									<th class="red">Fully Center</th>
-									<th class="red">Fully Corner</th>
-									<th class="red">Center Particles</th>
-									<th class="red">Corner Particles</th>
-									<th class="red">Cap Ball</th>
-									<th class="red">Beacons</th>
-									<th class="blue">Center Particles</th>
-									<th class="blue">Corner Particles</th>
-									<th class="green">Beacons</th>
-									<th class="green">Cap Floor</th>
-									<th class="green">Cap Raised</th>
-									<th class="green">Cap Above Center</th>
-									<th class="green">Cap In Center</th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php
-									AverageScoresTable('Y201702255');
-								?>
-							</tbody>
+						<?php
+							AverageScoresTable('Y201702255');
+						?>
 						</table>
 					</div>
 				</div>
