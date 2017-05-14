@@ -28,19 +28,19 @@
 
 		"GameInformation" => array(
 			"AUTO" => array(
-				"RobotParking" => InputTranslator($_POST['autoRobotParking']),
-				"ParticlesCenter" => intval($_POST['autoParticlesCenter']),
-				"ParticlesCorner" => intval($_POST['autoParticlesCorner']),
-				"CapBall" => InputTranslator($_POST['autoCapBall']),
-				"ClaimedBeacons" => intval($_POST['autoClaimedBeacons'])
+				"Parking" => $_POST['autoRobotParking'],
+				"CenterParticles" => intval($_POST['autoParticlesCenter']),
+				"CornerParticles" => intval($_POST['autoParticlesCorner']),
+				"CapBall" => $_POST['autoCapBall'],
+				"Beacons" => intval($_POST['autoClaimedBeacons'])
 			),
 			"DRIVER" => array(
-				"ParticlesCenter" => intval($_POST['driverParticlesCenter']),
-				"ParticlesCorner" => intval($_POST['driverParticlesCorner'])
+				"CenterParticles" => intval($_POST['driverParticlesCenter']),
+				"CornerParticles" => intval($_POST['driverParticlesCorner'])
 			),
 			"END" => array(
-				"AllianceClaimedBeacons" => intval($_POST['endAllianceClaimedBeacons']),
-				"CapBall" => InputTranslator($_POST['endCapBall'])
+				"Beacons" => intval($_POST['endAllianceClaimedBeacons']),
+				"CapBall" => $_POST['endCapBall']
 			)
 		)
 	);

@@ -20,6 +20,8 @@ class Validation(Foundation):
 		#Mongo Stuff
 		self.InitFoundation(collectionName)
 		print '-----VALIDATION-----'
+
+		gameObjectives = self.GameObjectives(self.Season())
 		
 		#------------------------Input Data Match Results------------------------------------------
 
@@ -103,143 +105,33 @@ class Validation(Foundation):
 							finalKeyPool.append(highestKey)
 
 			#Real stuff set up
-			allInputFields = {
-				'AUTO' : [
-					'RobotParking',
-					'ParticlesCenter',
-					'ParticlesCorner',
-					'CapBall',
-					'ClaimedBeacons'
-				],
-				'DRIVER' : [
-					'ParticlesCenter',
-					'ParticlesCorner'
-				],
-				'END' : [
-					'AllianceClaimedBeacons',
-					'CapBall'
-				]
-			}
-			allInputs = {
-				'AUTO' : {
-					'RobotParking' : [],
-					'ParticlesCenter' : [],
-					'ParticlesCorner' : [],
-					'CapBall' : [],
-					'ClaimedBeacons' : []
-				},
-				'DRIVER' : {
-					'ParticlesCenter' : [],
-					'ParticlesCorner' : []
-				},
-				'END' : {
-					'AllianceClaimedBeacons' : [],
-					'CapBall' : []
-				}
-			}
+			allInputFields = gameObjectives["DisplayOrder"]["Fields"]
 			allUniqueInputs = {}
-			countedInputs = {
-				'AUTO' : {
-					'RobotParking' : [],
-					'ParticlesCenter' : [],
-					'ParticlesCorner' : [],
-					'CapBall' : [],
-					'ClaimedBeacons' : []
-				},
-				'DRIVER' : {
-					'ParticlesCenter' : [],
-					'ParticlesCorner' : []
-				},
-				'END' : {
-					'AllianceClaimedBeacons' : [],
-					'CapBall' : []
-				}
-			}
-			maxFrequencyInput = {
-				'AUTO' : {
-					'RobotParking' : [],
-					'ParticlesCenter' : [],
-					'ParticlesCorner' : [],
-					'CapBall' : [],
-					'ClaimedBeacons' : []
-				},
-				'DRIVER' : {
-					'ParticlesCenter' : [],
-					'ParticlesCorner' : []
-				},
-				'END' : {
-					'AllianceClaimedBeacons' : [],
-					'CapBall' : []
-				}
-			}
-			majorityInput = {
-				'AUTO' : {
-					'RobotParking' : [],
-					'ParticlesCenter' : [],
-					'ParticlesCorner' : [],
-					'CapBall' : [],
-					'ClaimedBeacons' : []
-				},
-				'DRIVER' : {
-					'ParticlesCenter' : [],
-					'ParticlesCorner' : []
-				},
-				'END' : {
-					'AllianceClaimedBeacons' : [],
-					'CapBall' : []
-				}
-			}
-			inputRank = {
-				'AUTO' : {
-					'RobotParking' : [],
-					'ParticlesCenter' : [],
-					'ParticlesCorner' : [],
-					'CapBall' : [],
-					'ClaimedBeacons' : []
-				},
-				'DRIVER' : {
-					'ParticlesCenter' : [],
-					'ParticlesCorner' : []
-				},
-				'END' : {
-					'AllianceClaimedBeacons' : [],
-					'CapBall' : []
-				}
-			}
-			compileRank = {
-				'AUTO' : {
-					'RobotParking' : [],
-					'ParticlesCenter' : [],
-					'ParticlesCorner' : [],
-					'CapBall' : [],
-					'ClaimedBeacons' : []
-				},
-				'DRIVER' : {
-					'ParticlesCenter' : [],
-					'ParticlesCorner' : []
-				},
-				'END' : {
-					'AllianceClaimedBeacons' : [],
-					'CapBall' : []
-				}
-			}
-			finalOutput = {
-				'AUTO' : {
-					'RobotParking' : [],
-					'ParticlesCenter' : [],
-					'ParticlesCorner' : [],
-					'CapBall' : [],
-					'ClaimedBeacons' : []
-				},
-				'DRIVER' : {
-					'ParticlesCenter' : [],
-					'ParticlesCorner' : []
-				},
-				'END' : {
-					'AllianceClaimedBeacons' : [],
-					'CapBall' : []
-				}
-			}
+
+			allInputs = {}
+			countedInputs = {}
+			maxFrequencyInput = {}
+			majorityInput = {}
+			inputRank = {}
+			compileRank = {}
+			finalOutput = {}
+			for gamePeriod in allInputFields:
+				allInputs[gamePeriod] = {}
+				countedInputs[gamePeriod] = {}
+				maxFrequencyInput[gamePeriod] = {}
+				majorityInput[gamePeriod] = {}
+				inputRank[gamePeriod] = {}
+				compileRank[gamePeriod] = {}
+				finalOutput[gamePeriod] = {}
+				for field in allInputFields[gamePeriod]:
+					allInputs[gamePeriod][field] = []
+					countedInputs[gamePeriod][field] = []
+					maxFrequencyInput[gamePeriod][field] = []
+					majorityInput[gamePeriod][field] = []
+					inputRank[gamePeriod][field] = []
+					compileRank[gamePeriod][field] = []
+					finalOutput[gamePeriod][field] = []
+			
 			if finalKeyPool == []:
 				for document in inputDataDocuments:
 					for gamePeriods in allInputFields:
@@ -349,6 +241,18 @@ class Validation(Foundation):
 								finalOutput[gamePeriods][gameFields] = compileRankInformation['GameValue']
 
 			#final part
+			gameInformation = {}
+			for gamePeriod in allInputFields:
+				gameInformation[gamePeriod] = {}
+				for field in allInputFields[gamePeriod]:
+					fieldType = gameObjectives["Scoring"][gamePeriod][field]["Type"]
+					if fieldType == "String":
+						gameInformation[gamePeriod][field] = self.noneChanger(finalOutput[gamePeriod][field], gameObjectives["Scoring"][gamePeriod][field]["Default"])
+					elif fieldType == "YesNo":
+						gameInformation[gamePeriod][field] = self.noneChanger(finalOutput[gamePeriod][field], 'No')
+					elif fieldType == "Number":
+						gameInformation[gamePeriod][field] = self.noneChanger(finalOutput[gamePeriod][field], 0)
+
 			finalOutputFormat = {
 				'MetaData' : {
 					'MetaData' : 'MatchInput',
@@ -361,23 +265,7 @@ class Validation(Foundation):
 					'RobotAlliance' : matchInformation['RobotAlliance'],
 					'TeamNumber' : matchInformation['TeamNumber']
 				},
-				'GameInformation' : {
-					'AUTO' : {
-						'RobotParking' : self.noneChanger(finalOutput['AUTO']['RobotParking'], 'No Parking'),
-						'ParticlesCenter' : self.noneChanger(finalOutput['AUTO']['ParticlesCenter'], 0),
-						'ParticlesCorner' : self.noneChanger(finalOutput['AUTO']['ParticlesCorner'], 0),
-						'CapBall' : self.noneChanger(finalOutput['AUTO']['CapBall'], 'On Floor'),
-						'ClaimedBeacons' : self.noneChanger(finalOutput['AUTO']['ClaimedBeacons'], 0),
-					},
-					'DRIVER' : {
-						'ParticlesCenter' : self.noneChanger(finalOutput['DRIVER']['ParticlesCenter'], 0),
-						'ParticlesCorner' : self.noneChanger(finalOutput['DRIVER']['ParticlesCorner'], 0)
-					},
-					'END' : {
-						'AllianceClaimedBeacons' : self.noneChanger(finalOutput['END']['AllianceClaimedBeacons'], 0),
-						'CapBall' : self.noneChanger(finalOutput['END']['CapBall'], 'On Floor')
-					}
-				}
+				'GameInformation': gameInformation
 			}
 			self.collection.insert_one(finalOutputFormat)
 

@@ -36,6 +36,7 @@ class Foundation(object):
 		else:
 			client = MongoClient()
 		db = client.TheOrangeAlliance
+		self.gameObjectivesCollection = db.GameObjectives
 		self.teamCollection = db.Teams
 		self.collectionDataValidation = db.DataValidation
 		self.collectionRaw = eval("db."+collectionName + "Raw")
@@ -107,3 +108,25 @@ class Foundation(object):
 				if str(teamNumber) == teamNumberValue:
 					teamName = teamNameValue
 					return teamName
+
+	def Season(self):
+		year = int(self.collectionName[1:5])
+		month = int(self.collectionName[5:7])
+		season = str(year)
+		if (month > 7):
+			season = season + "-" + str(year+1)
+		else:
+			season = str(year-1) + "-" + season
+		return season
+
+	def GameObjectives(self, season):
+		for document in self.gameObjectivesCollection.find({'MetaData.MetaData': 'GameObjectives', 'SeasonInfo.Season': season}):
+			return document
+		return None
+
+
+
+
+
+
+

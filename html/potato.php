@@ -1,4 +1,21 @@
 <?php
+	function GameObjectives($season){
+		$manager = new MongoDB\Driver\Manager();
+		$query = new MongoDB\Driver\Query(['MetaData.MetaData' => 'GameObjectives', 'SeasonInfo.Season' => $season]);
+		$cursor = $manager->executeQuery('TheOrangeAlliance.GameObjectives', $query);
+		$cursor->setTypeMap(['root' => 'array', 'document' => 'array', 'array' => 'array']);
+		foreach($cursor as $document){
+			return $document;
+		}
+		return null;
+	}
+	function PutItInATH($stuffToPutIn, $class = ''){
+		if($class != ''){
+			echo "<th class=" . $class . ">" . $stuffToPutIn . "</th>";
+		}else{
+			echo "<th>" . $stuffToPutIn . "</th>";
+		}
+	}
 	function PutItInATD($stuffToPutIn, $class = ''){
 		$HIGHLIGHTLIST = array(
 			8097,
@@ -110,6 +127,7 @@
 				//PutItInATD(MakeTheFloatHaveAPercent(round($rank['AverageAccuracy'],4)));
 				echo '</tr>';
 			}
+			break;
 		}
 	}
 	function MatchHistoryTable($datePlace){
@@ -118,31 +136,59 @@
 		$cursor = $manager->executeQuery('TheOrangeAlliance.'.$datePlace, $query);
 		$cursor->setTypeMap(['root' => 'array', 'document' => 'array', 'array' => 'array']);
 		foreach($cursor as $document){
+			$gameObjectives = GameObjectives($document['MetaData']['Season']);
+			$gameFields = $gameObjectives['DisplayOrder']['Fields'];
+			echo '<thead>';
+			echo '<tr>';
+			PutItInATH('#');
+			PutItInATH('Alliance');
+			PutItInATH('Team Number');
+			PutItInATH('Team Name');
+			PutItInATH('Rank');
+			PutItInATH('OPR*');
+			PutItInATH('Result R-B');
+			PutItInATH('Score');
+			$gamePeriodHighlights = ['AUTO' => 'red', 'DRIVER' => 'blue', 'END' => 'green'];
+			$gamePeriods = array('AUTO', 'DRIVER', 'END');
+			foreach ($gamePeriods as $gamePeriod) {
+				$fields = $gameFields[$gamePeriod];
+				foreach ($fields as $field) {
+					PutItInATH($gameObjectives['DisplayNames']['Fields'][$gamePeriod][$field], $gamePeriodHighlights[$gamePeriod]);
+				}
+			}
+			echo '</tr>';
+			echo '</thead>';
+			echo '<tbody>';
 			foreach($document['MatchHistory'] as $matchNumber){
 				foreach($matchNumber as $alliance){
 					foreach($alliance as $teamNumber){
 						echo '<tr>';
 						PutItInATD($teamNumber['MatchNumber']);
-						PutItInATD($teamNumber['Alliance'] ,AllianceColor($teamNumber['Alliance']));
+						PutItInATD($teamNumber['Alliance'], AllianceColor($teamNumber['Alliance']));
 						PutItInATD($teamNumber['TeamNumber']);
 						PutItInATD($teamNumber['TeamName']);
 						PutItInATD($teamNumber['TeamRank']);
 						PutItInATD(RoundValue($teamNumber['OPR']));
 						PutItInATD(ResultsRB($teamNumber['ResultRed'],$teamNumber['ResultBlue']), ResultsRBClass($teamNumber['ResultRed'],$teamNumber['ResultBlue']));
 						PutItInATD($teamNumber['Score']);
-						PutItInATD($teamNumber['AUTO']['Parking']);
-						PutItInATD($teamNumber['AUTO']['CenterParticles']);
-						PutItInATD($teamNumber['AUTO']['CornerParticles']);
-						PutItInATD($teamNumber['AUTO']['CapBall']);
-						PutItInATD($teamNumber['AUTO']['Beacons']);
-						PutItInATD($teamNumber['DRIVER']['CenterParticles']);
-						PutItInATD($teamNumber['DRIVER']['CornerParticles']);
-						PutItInATD($teamNumber['END']['Beacons']);
-						PutItInATD($teamNumber['END']['CapBall']);
+						foreach ($gamePeriods as $gamePeriod) {
+							$fields = $gameFields[$gamePeriod];
+							foreach($fields as $field) {
+								$fieldType = $gameObjectives['Scoring'][$gamePeriod][$field]['Type'];
+								if($fieldType == 'String' || $fieldType == 'YesNo'){
+									$value = $teamNumber[$gamePeriod][$field];
+									PutItInATD($gameObjectives['DisplayNames']['Options'][$gamePeriod][$field][$value]);
+								}else if($fieldType == 'Number'){
+									PutItInATD($teamNumber[$gamePeriod][$field]);
+								}
+							}
+						}
 						echo '</tr>';
 					}
 				}
 			}
+			echo '</tbody>';
+			break;
 		}
 	}
 	function AverageScoresTable($datePlace){
@@ -151,6 +197,34 @@
 		$cursor = $manager->executeQuery('TheOrangeAlliance.'.$datePlace, $query);
 		$cursor->setTypeMap(['root' => 'array', 'document' => 'array', 'array' => 'array']);
 		foreach($cursor as $document){
+			$gameObjectives = GameObjectives($document['MetaData']['Season']);
+			$gameFields = $gameObjectives['DisplayOrder']['Fields'];
+			echo '<thead>';
+			echo '<tr>';
+			PutItInATH('Team Number');
+			PutItInATH('Team Name');
+			PutItInATH('Average Score');
+			$gamePeriodHighlights = ['AUTO' => 'red', 'DRIVER' => 'blue', 'END' => 'green'];
+			PutItInATH('Average Auto', $gamePeriodHighlights['AUTO']);
+			PutItInATH('Average Driver', $gamePeriodHighlights['DRIVER']);
+			PutItInATH('Average End', $gamePeriodHighlights['END']);
+			$gamePeriods = array('AUTO', 'DRIVER', 'END');
+			foreach ($gamePeriods as $gamePeriod) {
+				$fields = $gameFields[$gamePeriod];
+				foreach ($fields as $field) {
+					$fieldType = $gameObjectives['Scoring'][$gamePeriod][$field]['Type'];
+					if($fieldType == 'String'){
+						foreach ($gameObjectives['DisplayOrder']['Options'][$gamePeriod][$field] as $option) {
+							PutItInATH($gameObjectives['DisplayNames']['Options'][$gamePeriod][$field][$option], $gamePeriodHighlights[$gamePeriod]);
+						}
+					}else if($fieldType == 'Number' || $fieldType == 'YesNo'){
+						PutItInATH($gameObjectives['DisplayNames']['Fields'][$gamePeriod][$field], $gamePeriodHighlights[$gamePeriod]);
+					}
+				}
+			}
+			echo '</tr>';
+			echo '</thead>';
+			echo '<tbody>';
 			foreach($document['AverageScores'] as $teamNumber){
 				echo '<tr>';
 				PutItInATD($teamNumber['TeamNumber']);
@@ -160,25 +234,23 @@
 				PutItInATD($teamNumber['AverageScores']['AverageAuto']);
 				PutItInATD($teamNumber['AverageScores']['AverageDriver']);
 				PutItInATD($teamNumber['AverageScores']['AverageEnd']);
-				PutItInATD($teamNumber['AUTO']['Parking']['NoParking']);
-				PutItInATD($teamNumber['AUTO']['Parking']['PartiallyCenter']);
-				PutItInATD($teamNumber['AUTO']['Parking']['PartiallyCorner']);
-				PutItInATD($teamNumber['AUTO']['Parking']['FullyCenter']);
-				PutItInATD($teamNumber['AUTO']['Parking']['FullyCorner']);
-				PutItInATD($teamNumber['AUTO']['CenterParticles']);
-				PutItInATD($teamNumber['AUTO']['CornerParticles']);
-				PutItInATD($teamNumber['AUTO']['CapBall']);
-				PutItInATD($teamNumber['AUTO']['Beacons']);
-				PutItInATD($teamNumber['DRIVER']['CenterParticles']);
-				PutItInATD($teamNumber['DRIVER']['CornerParticles']);
-				PutItInATD($teamNumber['END']['Beacons']);
-				PutItInATD($teamNumber['END']['CapBall']['CapBallOnFloor']);
-				PutItInATD($teamNumber['END']['CapBall']['CapBallRaised']);
-				PutItInATD($teamNumber['END']['CapBall']['CapBallAboveCenter']);
-				PutItInATD($teamNumber['END']['CapBall']['CapBallInCenter']);
+				foreach ($gamePeriods as $gamePeriod) {
+					$fields = $gameFields[$gamePeriod];
+					foreach ($fields as $field) {
+						$fieldType = $gameObjectives['Scoring'][$gamePeriod][$field]['Type'];
+						if($fieldType == 'String'){
+							foreach ($gameObjectives['DisplayOrder']['Options'][$gamePeriod][$field] as $option) {
+								PutItInATD($teamNumber[$gamePeriod][$field][$option]);
+							}
+						}else if($fieldType == 'Number' || $fieldType == 'YesNo'){
+							PutItInATD($teamNumber[$gamePeriod][$field]);
+						}
+					}
+				}
 				echo '</tr>';
-				
 			}
+			echo '</tbody>';
+			break;
 		}
 	}
 ?>
