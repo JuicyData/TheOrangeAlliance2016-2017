@@ -6,7 +6,6 @@ from Foundation import Foundation
 from Output import Output
 from RankingsData import RankingsData
 from OPRCCWMData import Opr
-from MatchData import MatchData
 from AverageScoresData import AverageScoresData
 from Validation import Validation
 
