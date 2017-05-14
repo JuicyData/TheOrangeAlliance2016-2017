@@ -98,7 +98,7 @@ velocityVortex = {
 		"Options": {
 			"AUTO": {
 				"Parking": {
-					"NoParking": "Did Not Park",
+					"NoParking": "No Parking",
 					"PartiallyCenter": "Partially Center",
 					"PartiallyCorner": "Partially Corner",
 					"FullyCenter": "Fully Center",
@@ -112,7 +112,7 @@ velocityVortex = {
 			"DRIVER": {},
 			"END": {
 				"CapBall": {
-					"CapBallOnFloor": "On The Ground",
+					"CapBallOnFloor": "Cap On Floor",
 					"CapBallRaised": "Raised Off Floor",
 					"CapBallAboveCenter": "Raised Above Vortex",
 					"CapBallInCenter": "In Center Vortex"
